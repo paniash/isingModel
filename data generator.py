@@ -6,10 +6,11 @@ import matplotlib.pyplot as plt
 d=40
 
 lattice=np.random.random((d,d))
-#relabel 1 and -1 w.r.t the probability of getting it down=p
-p=0.5
-lattice[lattice>=p]=1
-lattice[lattice<p]=-1
+#lattice with a:(1-a) down-up
+a=0.8
+
+lattice[lattice>=a]=1
+lattice[lattice<a]=-1
 
 #create 0 in the border (just to make neighbour atom calculations easier)
 lattice=np.pad(array=lattice, pad_width=1, mode='constant')
@@ -48,7 +49,7 @@ n=np.pad(array=n, pad_width=1, mode='constant')
 print(get_energy(lattice),get_energy(m),get_energy(n))
 
 #the ising model generated(green->up, red->down)
-plt.imshow(lattice,cmap='prism')
+plt.imshow(lattice,cmap='Greys_r',interpolation='nearest', origin='lower')
 
 #Implement metropolis algo (Source Wikipedia) // How reliable is this algo? Can we provide a guarantee of our datas quality?
 #Pick a spin site using selection probability g(μ, ν) and calculate the contribution to the energy involving this spin.
