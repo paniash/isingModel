@@ -48,16 +48,63 @@ n=np.pad(array=n, pad_width=1, mode='constant')
 
 print(get_energy(lattice),get_energy(m),get_energy(n))
 
-#the ising model generated(green->up, red->down)
+#the ising model generated(white->up, black->down)
 plt.imshow(lattice,cmap='Greys_r',interpolation='nearest', origin='lower')
 
-#Implement metropolis algo (Source Wikipedia) // How reliable is this algo? Can we provide a guarantee of our datas quality?
-#Pick a spin site using selection probability g(μ, ν) and calculate the contribution to the energy involving this spin.
-#Flip the value of the spin and calculate the new contribution
-#If the new energy is less, keep the flipped value.
-#If the new energy is more, only keep with probability e − β ( H ν − H μ ) . {\displaystyle e^{-\beta (H_{\nu }-H_{\mu })}.} 
-#Repeat
+###Implement metropolis algo (Source Wikipedia) // How reliable is this algo? Can we provide a guarantee of our datas quality?
+#metropolis algo
+def metro(lattice,reps):
+    #our inverse temperature
+    beta=.5
+    
+    #for plotting our monte carlo data
+    iterate,energy,spin=np.zeros(reps),np.zeros(reps),np.zeros(reps)
+    
+    for i in range(reps):
+        
+        #random pick of our point in lattice
+        x,y=np.random.randint(1,d),np.random.randint(1,d)
+        
+        #make a copy of lattice with the spin at our random point flipped
+        lattice_flip=lattice.copy()
+        lattice_flip[x,y]*=-1
+        
+        #energies of our two systems
+        e1=get_energy(lattice)
+        e2=get_energy(lattice_flip)
+        
+        #if energy increase only keep with a probability(more energy increase, lesser the prob)
+        if e2>e1:
+            #probability of flipping if unfavourable
+            p=np.exp(-beta*(e2-e1))
+            
+            if np.random.random()<p:
+                
+                lattice[x,y]*=-1
+            
+        #flip the lattice spin if energy decreases
+        else:
+            lattice[x,y]*=-1
+        
+        #dont need the copy after comparison
+        del lattice_flip
+        
+        #save the energy
+        energy[i]=get_energy(lattice)
+        iterate[i]=i
+        spin[i]=np.sum(lattice)
+    return iterate,energy,spin
 
 #we have the lattice configuration generated for our specified temperature β.
+x,y,z=metro(lattice,10)
+plt.figure()
+plt.grid()
+plt.plot(x,y)
+plt.plot(x,z)
+plt.show()    
+
+plt.imshow(lattice,cmap='Greys_r',interpolation='nearest', origin='lower')
 
 #generate as much data as you require for all sets of temperatures.
+
+#try out animating the plots as monte carlo runs..?
