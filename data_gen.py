@@ -19,15 +19,37 @@ class ising_model_2D():
         
         self.b=mfield
 
-        #initialise the net spin of our lattice
+        #initialise the energy n net spin of our lattice
+        self.energy=self.get_energy() #use it to get monte carlo data.
         self.spin=np.sum(self.lattice)
         
+    #to find the stable energy of our lattice
+    def stable_energy(self):
+        #the most stable energy(alligned spins))
+        n=np.ones((d,d))
+        n=np.pad(array=n, pad_width=1, mode='constant')
+        
+        e=0
+        #look at the i,jth atom. 
+        for i in range(1,d+1):
+            for j in range(1,d+1):
+                #see the neighbouring atoms(up,down,left,right)
+                g=np.array([[0,1,0],[1,0,1],[0,1,0]])
+                
+                #calculate the sigma_ij*sigma_i'j' around our atom at ij
+                m=-n[i,j]*g*n[i-1:i+2,j-1:j+2]
+                
+                #sum over all the neighbour sigmas
+                e+=np.sum(m)
+        
+        return e
+    
     #fn to find the energy of our lattice with B
     def get_energy(self):
         e=0
         #look at the i,jth atom. 
-        for i in range(1,d):
-            for j in range(1,d):
+        for i in range(1,d+1): #correction: d->d+1..!
+            for j in range(1,d+1):
                 #see the neighbouring atoms(up,down,left,right)
                 g=np.array([[0,1,0],[1,0,1],[0,1,0]])
                 
@@ -71,7 +93,11 @@ class ising_model_2D():
         #spin at (x,y) flippd
         self.lattice[x,y]*=-1
         
-        #manually update the energy of our system after the iterations...
+        #update the energy of our system after the iterations...
+        e1,e2=self.flipcheck(x,y)
+        
+        #the energy difference is double counted for all the neighbouring bonds 
+        self.energy+=2*(e1-e2)
         
         #update spin
         self.spin+=2*self.lattice[x,y]
@@ -79,9 +105,9 @@ class ising_model_2D():
 
 #dimension of our array
 d=200
-
 #optional addition of external magnetic field B
 b=0.0
+
 lat=ising_model_2D(d,0.5,b)
 
 print(lat.get_energy(),lat.spin,'starting!')
@@ -118,7 +144,7 @@ def metro(lat,reps):
             lat.flip(x,y)
         
         #save the energy in case yu need to see the convergence of monte carlo..
-        #energy[i]=lat.energy
+        energy[i]=lat.energy
         iterate[i]=i
         spin[i]=lat.spin
         
@@ -126,16 +152,22 @@ def metro(lat,reps):
     return iterate,energy,spin
 
 
-x,drop,y=metro(lat,1000000)
+x,y,z=metro(lat,1000000)
 
 #if you wanna plot the energy plots for every monte iteration, use this
 plt.figure()
 plt.grid()
-plt.plot(x,y)
-# plt.plot(x,z)
+plt.plot(x,y,label='Energy vs # iterations')
+plt.legend()
 plt.show()
 
-print(lat.get_energy(),lat.spin)
+plt.figure()
+plt.grid()
+plt.plot(x,z,label='Net Spin vs # iteration')
+plt.legend()
+plt.show()
+
+print(lat.energy,lat.spin)
 plt.imshow(lat.lattice,cmap='Greys_r',interpolation='nearest', origin='lower')
 
 #this is one such generation of our ising model once it attained sufficient iterations.
