@@ -114,7 +114,7 @@ print(lat.get_energy(), lat.spin, "starting!")
 lattice = lat.lattice.copy()
 plt.imshow(lattice, cmap="Greys_r", interpolation="nearest", origin="lower")
 
-# metropolis algo
+# metropolis algorithm
 def metro(lat, reps):
     # our inverse temperature
     beta = 0.75
