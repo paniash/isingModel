@@ -29,7 +29,7 @@ def energy(l):
 d=50
 #no of 1d ising models
 #n=2440
-for n in [250,500,1500,2000,2500,5000]:
+for n in [250,800,1700,2000,4000,5000]:
   #defining our lattice
   l=np.random.choice([-1, 1], size=(n,d))
 
@@ -78,10 +78,9 @@ for n in [250,500,1500,2000,2500,5000]:
 
   print("n: %s"%n,"train-test: ",m,'-',n-m)
   print("Training score: %s /100"%mark1)
-  print("Testing score: %s /100"%mark2)
+  print("Testing score: %s /100"%mark2,'\n')
 
   plt.figure()
   plt.title('n=%s'%n)
   c=plt.imshow(J,vmin=-1, vmax=1,cmap='Spectral_r',interpolation='nearest', origin='lower')
   plt.colorbar(c)
-
