@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Oct 16 12:35:39 2021
+import matplotlib.pyplot as plt
+import numpy as np
 
-@author: gauta
-"""
 d = 50
 # J=np.diag(,k=-1)
 J = np.zeros((d, d))
@@ -28,4 +25,5 @@ c = plt.imshow(
     J, vmin=-1, vmax=1, cmap="Spectral_r", interpolation="nearest", origin="lower"
 )
 plt.colorbar(c)
-plt.savefig(r"G:\Sem 7 (labs+online)\ML\Ising model\Lasso reg_1D\lassoJ-%s.png" % i)
+plt.show()
+# plt.savefig(r"G:\Sem 7 (labs+online)\ML\Ising model\Lasso reg_1D\lassoJ-%s.png" % i)
