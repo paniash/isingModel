@@ -18,15 +18,15 @@ def pbc(i,d):
 def energy(l,d):
     e=0
     #center is the atom, left n right r interactions with neighbours
-    j=[-0.5,-1,0,-1,-0.5]
+    j=[-0,-1,0,-1,-0]
     
     #our energy assumes periodic boundary conditions
     for i in range(l.size):
       
-      e+=l[i]*(j[pbc(-2,d)]*l[pbc(i-2,d)]
-                 +j[pbc(-1,d)]*l[pbc(i-1,d)]
-                 +j[pbc(0,d)]*l[pbc(i,d)]
-                 +j[pbc(1,d)]*l[pbc(i+1,d)]
-                 +j[pbc(2,d)]*l[pbc(i+2,d)])
+      e+=l[i]*(j[pbc(0,d)]*l[pbc(i-2,d)]
+                 +j[pbc(1,d)]*l[pbc(i-1,d)]
+                 +j[pbc(2,d)]*l[pbc(i,d)]
+                 +j[pbc(3,d)]*l[pbc(i+1,d)]
+                 +j[pbc(4,d)]*l[pbc(i+2,d)])
     
     return e
