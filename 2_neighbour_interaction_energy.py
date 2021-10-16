@@ -18,7 +18,7 @@ def pbc(i,d):
 def energy(l,d):
     e=0
     #center is the atom, left n right r interactions with neighbours
-    j=[-0,-1,0,-1,-0]
+    j=[-0.5,-1,0,-1,-0.5]
     
     #our energy assumes periodic boundary conditions
     for i in range(l.size):
