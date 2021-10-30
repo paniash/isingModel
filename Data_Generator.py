@@ -5,9 +5,10 @@ Created on Sun Oct 17 19:20:43 2021
 @author: gauta
 """
 
-# optimised monte carlo by introducing classes and energy functions...
+# optimised monte carlo by introducing classes energy functions and NUMBA...
 import numpy as np
-import matplotlib.pyplot as plt
+import numba
+import time
 
 # define an ising model class to simplify calculations...
 class ising_model_2D:
@@ -109,29 +110,31 @@ class ising_model_2D:
         # update spin
         self.spin += 2 * self.lattice[x, y]
 
-
 # dimension of our array
 d = 50
 # optional addition of external magnetic field B
 b = 0.0
 
-# our inverse temperature
-# beta = 0.3
-
-
 # metropolis algorithm
-def metro(lat, beta, reps):
-    
-    # to record our monte carlo data
-    iterate, energy, spin = np.zeros(reps), np.zeros(reps), np.zeros(reps)
-
+@numba.njit("f8[:,:](f8[:,:], f8, i8)", nogil=True)
+def metro(lattt, beta, reps):
+    lat=lattt.copy()
     for i in range(reps):
 
         # random pick of our point in lattice
         x, y = np.random.randint(1, d), np.random.randint(1, d)
 
         # energies of our two systems
-        e1, e2 = lat.flipcheck(x, y)
+        #e1, e2 = flipcheck(lat, x, y)
+
+        #manual spinflip check
+        g = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]])
+        m = -lat[x, y] * g * lat[x - 1 : x + 2, y - 1 : y + 2]
+        e1 = np.sum(m) - lat[x, y] * b
+        lat[x, y] *= -1
+        m = -lat[x, y] * g * lat[x - 1 : x + 2, y - 1 : y + 2]
+        e2 = np.sum(m) - lat[x, y] * b
+        lat[x, y] *= -1
 
         # if energy increase only keep with a probability(more energy increase, lesser the prob)
         if e2 > e1:
@@ -140,66 +143,49 @@ def metro(lat, beta, reps):
 
             if np.random.random() < p:
 
-                lat.flip(x, y)
+                lat[x, y] *= -1
 
         # flip the lattice spin if energy decreases
         else:
-            lat.flip(x, y)
+            lat[x, y] *= -1
 
-        # save the energy in case yu need to see the convergence of monte carlo..
-        energy[i] = lat.energy
-        iterate[i] = i
-        spin[i] = lat.spin
+    return lat
 
-    return iterate, energy, spin
+#temperature fineness
+h=20
+t=np.linspace(0.25,4,h)
 
-for beta in np.linspace(0.1,1,10):
+Master=[]
+for T in t:
+
     data=[]
-    print('beta: %s'%beta)
+    print('T: %s'%T)  
     print('Data generated:')
     
     #no of datasets in each temperature
     n=10000
-    
+    mat=time.time()
     for i in range(n):
       print(i)
-      lat = ising_model_2D(d, 0.5, b)
+      start=time.time()
+      lat = ising_model_2D(d, 0.5, b) 
       
-      x, y, z = metro(lat, beta, 50000)
+      lat.lattice=metro(lat.lattice, 1/T, 60000)
+      lat.energy=lat.get_energy()
+      lat.spin=np.sum(lat.lattice)
 
       data.append(lat)
-    
+      #plt.imshow(lat.lattice, cmap="Greys_r", interpolation="nearest", origin="lower")
+      print('Execution time: ',time.time()-start)
     #save data in a file! Gets destroyed every iteration!!!
     data=np.array(data)
-    np.save('2d_ising_beta-%s'%beta,data,allow_pickle=True)
-    
-    #for loading the npy pickle files:
-    # np.load('2d_ising_beta-0.1.npy',allow_pickle=True)
-    
-      # # if you wanna plot the energy plots for every monte iteration, use this
-      # plt.figure()
-      # plt.grid()
-      # plt.title(r'$\beta$: %s'%beta)
-      # plt.xlabel('#iterations')
-      # plt.ylabel('Energy (units)')
-      # plt.plot(x, y, label="Energy vs # iterations")
-      # plt.legend()
-      # plt.show()
-    
-      # plt.figure()
-      # plt.grid()
-      # plt.title(r'$\beta$: %s'%beta)
-      # plt.xlabel('#iterations')
-      # plt.ylabel('Net Spin')
-      # plt.plot(x, z, label="Net Spin vs # iteration")
-      # plt.legend()
-      # plt.show()
+    Master.append(data)
+    print('Total time for beta: ',time.time()-mat,'\n')
       
-      # print(lat.energy, lat.spin)
-      # plt.imshow(lat.lattice, cmap="Greys_r", interpolation="nearest", origin="lower")
+Master=np.array(Master)
+np.save('2d_ising_data_2',Master,allow_pickle=True)
+np.savetxt('Temperature.csv',t,delimiter=',')
 
-# this is one such generation of our ising model once it attained sufficient iterations.
-# generate as much data as you require for all sets of temperatures.(by varying beta in metro algo...)
 
-# this is one such generation of our ising model once it attained sufficient iterations.
-# generate as much data as you require for all sets of temperatures.(by varying beta in metro algo...)
+#for loading the npy pickle files:
+# np.load('2d_ising_data_2.npy',allow_pickle=True)
