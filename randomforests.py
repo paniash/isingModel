@@ -137,9 +137,9 @@ for i in range(len(data_disordered[:])):
     for j in range(data_disordered[0].size):
         X_disordered.append(data_disordered[i][j].lattice)
 
-X_ordered = np.array(X_ordered)
-X_critical = np.array(X_critical)
-X_disordered = np.array(X_disordered)
+# X_ordered = np.array(X_ordered)
+# X_critical = np.array(X_critical)
+# X_disordered = np.array(X_disordered)
 
 del data, data_ordered, data_disordered, data_critical
 
@@ -244,13 +244,13 @@ lgd=plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 
 plt.show()
 
-plt.plot(n_estimator_range, run_time[1], '--k^',label='Coarse')
-plt.plot(n_estimator_range, run_time[0], 'o-k',label='Fine')
-plt.xlabel('$N_\mathrm{estimators}$')
-plt.ylabel('Run time (s)')
+# plt.plot(n_estimator_range, run_time[1], '--k^',label='Coarse')
+# plt.plot(n_estimator_range, run_time[0], 'o-k',label='Fine')
+# plt.xlabel('$N_\mathrm{estimators}$')
+# plt.ylabel('Run time (s)')
 
 
-plt.legend(loc=2)
-#plt.savefig("Ising_RF_Runtime.pdf")
+# plt.legend(loc=2)
+# #plt.savefig("Ising_RF_Runtime.pdf")
 
-plt.show()
+# plt.show()
