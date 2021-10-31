@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Spyder Editor
-
-This is a temporary script file.
-"""
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -111,7 +105,7 @@ class ising_model_2D:
 data=np.load('2d_ising_data_2.npy',allow_pickle=True)
 
 #temperature label load
-t=np.genfromtxt('Temperature.csv', delimiter=',')
+t=np.genfromtxt('temperature.csv', delimiter=',')
 
 #to see the statistical results of our generated data
 e,spin=np.zeros(20),np.zeros(20)
@@ -128,13 +122,13 @@ n=data.shape[1]
 for i in range(h):
     avg_e=0
     avg_spin=0
-    
+
     for j in range(n):
         avg_e+=data[i][j].energy
         avg_spin+=data[i][j].spin
     avg_e/=n
     avg_spin/=n
-    
+
     e[i]=avg_e
     spin[i]=avg_spin
 
@@ -162,5 +156,3 @@ plt.ylabel('dE/dT (units)')
 plt.plot(t[r:h-r],c[r:h-r])
 plt.plot(t[r:h-r],c[r:h-r],'k .')
 plt.show()
-
-

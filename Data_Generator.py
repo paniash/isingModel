@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Oct 17 19:20:43 2021
-
-@author: gauta
-"""
-
 # optimised monte carlo by introducing classes energy functions and NUMBA...
 import numpy as np
 import numba
@@ -188,4 +181,4 @@ np.savetxt('Temperature.csv',t,delimiter=',')
 
 
 #for loading the npy pickle files:
-np.load('2d_ising_data_2.npy',allow_pickle=True)
+# np.load('2d_ising_data_2.npy',allow_pickle=True)
