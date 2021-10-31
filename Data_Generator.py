@@ -159,17 +159,17 @@ Master=[]
 for T in t:
 
     data=[]
-    print('T: %s'%T)  
+    print('T: %s'%T)
     print('Data generated:')
-    
+
     #no of datasets in each temperature
     n=10000
     mat=time.time()
     for i in range(n):
       print(i)
       start=time.time()
-      lat = ising_model_2D(d, 0.5, b) 
-      
+      lat = ising_model_2D(d, 0.5, b)
+
       lat.lattice=metro(lat.lattice, 1/T, 60000)
       lat.energy=lat.get_energy()
       lat.spin=np.sum(lat.lattice)
@@ -181,11 +181,11 @@ for T in t:
     data=np.array(data)
     Master.append(data)
     print('Total time for beta: ',time.time()-mat,'\n')
-      
+
 Master=np.array(Master)
 np.save('2d_ising_data_2',Master,allow_pickle=True)
 np.savetxt('Temperature.csv',t,delimiter=',')
 
 
 #for loading the npy pickle files:
-# np.load('2d_ising_data_2.npy',allow_pickle=True)
+np.load('2d_ising_data_2.npy',allow_pickle=True)
