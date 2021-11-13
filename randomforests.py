@@ -128,33 +128,45 @@ data_disordered = data[14:]
 # our training data
 X_ordered = []
 for i in range(len(data_ordered[:])):
-    for j in range(data_ordered[0].size):
-        X_ordered.append(data_ordered[i][j].lattice)
+    # lattice very close to critical temperature
+    if i==len(data_ordered[:])-1:
+        for j in range(data_ordered[0].size):
+            X_ordered.append(data_ordered[i][j].lattice)
+            X_ordered.append(data_ordered[i][j].lattice)
+            X_ordered.append(data_ordered[i][j].lattice)
+    # lattice bit near to critical temperature
+    elif i==len(data_ordered[:])-2:
+        for j in range(data_ordered[0].size):
+            X_ordered.append(data_ordered[i][j].lattice)
+            X_ordered.append(data_ordered[i][j].lattice)
+    # lattice bit far from critical temperature
+    else:
+        for j in range(data_ordered[0].size):
+            X_ordered.append(data_ordered[i][j].lattice)
 
 X_disordered = []
 for i in range(len(data_disordered[:])):
-    for j in range(data_disordered[0].size):
-        X_disordered.append(data_disordered[i][j].lattice)
+    # lattice very close to critical temperature
+    if i==len(data_disordered[:])-1:
+        for j in range(data_disordered[0].size):
+            X_disordered.append(data_disordered[i][j].lattice)
+            X_disordered.append(data_disordered[i][j].lattice)
+            X_disordered.append(data_disordered[i][j].lattice)
+    # lattice bit near to critical temperature
+    elif i==len(data_disordered[:])-2:
+        for j in range(data_disordered[0].size):
+            X_disordered.append(data_disordered[i][j].lattice)
+            X_disordered.append(data_disordered[i][j].lattice)
+    # lattice bit far from critical temperature
+    else:
+        for j in range(data_disordered[0].size):
+            X_disordered.append(data_disordered[i][j].lattice)
 
 X_critical = []
 for i in range(len(data_critical[:])):
-    # lattice bit far from critical temperature
-    if i==0 or i==5:
-        for j in range(data_critical[0].size):
-            X_critical.append(data_critical[i][j].lattice)
-    # lattice bit near to critical temperature
-    if i==1 or i==4:
-        for j in range(data_critical[0].size):
-            X_critical.append(data_critical[i][j].lattice)
-            X_critical.append(data_critical[i][j].lattice)
-    # lattice very close to critical temperature
-    if i==2 or i==3:
-        for j in range(data_critical[0].size):
-            X_critical.append(data_critical[i][j].lattice)
-            X_critical.append(data_critical[i][j].lattice)
-            X_critical.append(data_critical[i][j].lattice)
+    for j in range(data_critical[0].size):
+        X_critical.append(data_critical[i][j].lattice)
 
-print(len(X_critical))
 
 del data, data_ordered, data_disordered, data_critical
 
@@ -195,7 +207,7 @@ print(X_test.shape[0], 'test samples')
 from sklearn.ensemble import RandomForestClassifier
 
 min_estimators = 10
-max_estimators = 101
+max_estimators = 201
 classifer = RandomForestClassifier
 
 #%%
